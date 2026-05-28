@@ -1,0 +1,1875 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="neon-blue">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<link rel="stylesheet" href="css/style.css">
+<title>NexType — AI Typing Arena</title>
+<meta name="description" content="Premium AI-themed typing game. Type fast. Think faster. Destroy tech terms.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;900&family=Roboto+Mono:wght@400;500;700&family=Rajdhani:wght@400;500;600;700&family=Share+Tech+Mono&family=Exo+2:wght@300;400;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   NEXTYPE v5.0 — PREMIUM AI TYPING ARENA
+   Stack: Vanilla JS · Canvas API · Web Audio · CSS Custom Props
+   Author: NexType Studio
+============================================================ */
+
+/* ── RESET ── */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{width:100%;height:100%;overflow:hidden;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
+
+/* ═══════════════════════════════════════════════════════════
+   THEME TOKENS — 5 premium themes, each fully defined
+═══════════════════════════════════════════════════════════ */
+
+[data-theme="neon-blue"]{
+  --bg-a:#010816;--bg-b:#020d22;--bg-c:#04122e;--bg-d:#06183a;
+  --panel:rgba(2,10,28,0.88);--panel2:rgba(1,8,20,0.95);
+  --b0:rgba(0,180,255,0.07);--b1:rgba(0,180,255,0.15);--b2:rgba(0,180,255,0.30);--b3:rgba(0,180,255,0.55);
+  --ink0:#d8f0ff;--ink1:#80b8d8;--ink2:#3a6888;--ink3:#1c3850;
+  --A:#00ccff;--A2:#0066ff;--Ar:0,204,255;
+  --Ag:rgba(0,204,255,0.38);--Ad:rgba(0,204,255,0.10);--Ak:rgba(0,204,255,0.04);
+  --R:#ff2d6b;--Rg:rgba(255,45,107,0.40);
+  --G:#00ffa0;--Gg:rgba(0,255,160,0.38);
+  --Y:#ffd200;--Yg:rgba(255,210,0,0.38);
+  --nc:rgba(0,160,255,0.22);--gc:rgba(0,130,255,0.055);
+  --w1:#00e5ff;--w1g:rgba(0,229,255,0.55);--w1k:rgba(0,229,255,0.08);
+  --w2:#ff4dff;--w2g:rgba(255,77,255,0.55);--w2k:rgba(255,77,255,0.08);
+  --w3:#ffd200;--w3g:rgba(255,210,0,0.55); --w3k:rgba(255,210,0,0.08);
+  --w4:#00ffa0;--w4g:rgba(0,255,160,0.55);--w4k:rgba(0,255,160,0.08);
+  --w5:#ff7028;--w5g:rgba(255,112,40,0.55);--w5k:rgba(255,112,40,0.08);
+  --w6:#a855ff;--w6g:rgba(168,85,255,0.55);--w6k:rgba(168,85,255,0.08);
+}
+[data-theme="cyber-purple"]{
+  --bg-a:#06020f;--bg-b:#0c041e;--bg-c:#13062d;--bg-d:#1a093c;
+  --panel:rgba(12,4,30,0.90);--panel2:rgba(6,2,15,0.96);
+  --b0:rgba(150,60,255,0.08);--b1:rgba(150,60,255,0.18);--b2:rgba(150,60,255,0.32);--b3:rgba(150,60,255,0.58);
+  --ink0:#eedeff;--ink1:#b880ee;--ink2:#7040a8;--ink3:#3a1868;
+  --A:#bb44ff;--A2:#7722cc;--Ar:187,68,255;
+  --Ag:rgba(187,68,255,0.42);--Ad:rgba(187,68,255,0.12);--Ak:rgba(187,68,255,0.05);
+  --R:#ff2850;--Rg:rgba(255,40,80,0.42);
+  --G:#44ffcc;--Gg:rgba(68,255,204,0.40);
+  --Y:#ffcc33;--Yg:rgba(255,204,51,0.40);
+  --nc:rgba(150,60,255,0.22);--gc:rgba(120,40,255,0.055);
+  --w1:#cc44ff;--w1g:rgba(204,68,255,0.58);--w1k:rgba(204,68,255,0.08);
+  --w2:#00ffee;--w2g:rgba(0,255,238,0.58);--w2k:rgba(0,255,238,0.08);
+  --w3:#ffcc33;--w3g:rgba(255,204,51,0.58);--w3k:rgba(255,204,51,0.08);
+  --w4:#ff3388;--w4g:rgba(255,51,136,0.58);--w4k:rgba(255,51,136,0.08);
+  --w5:#77aaff;--w5g:rgba(119,170,255,0.58);--w5k:rgba(119,170,255,0.08);
+  --w6:#55ffaa;--w6g:rgba(85,255,170,0.58);--w6k:rgba(85,255,170,0.08);
+}
+[data-theme="emerald-green"]{
+  --bg-a:#010d06;--bg-b:#031809;--bg-c:#04220e;--bg-d:#062d14;
+  --panel:rgba(3,24,9,0.90);--panel2:rgba(1,13,6,0.96);
+  --b0:rgba(0,255,100,0.07);--b1:rgba(0,255,100,0.16);--b2:rgba(0,255,100,0.30);--b3:rgba(0,255,100,0.55);
+  --ink0:#ccffe4;--ink1:#55cc88;--ink2:#246044;--ink3:#0e3020;
+  --A:#00ff88;--A2:#00cc55;--Ar:0,255,136;
+  --Ag:rgba(0,255,136,0.40);--Ad:rgba(0,255,136,0.10);--Ak:rgba(0,255,136,0.04);
+  --R:#ff4040;--Rg:rgba(255,64,64,0.42);
+  --G:#00ff88;--Gg:rgba(0,255,136,0.40);
+  --Y:#eeff44;--Yg:rgba(238,255,68,0.40);
+  --nc:rgba(0,200,80,0.22);--gc:rgba(0,180,60,0.055);
+  --w1:#00ff88;--w1g:rgba(0,255,136,0.58);--w1k:rgba(0,255,136,0.08);
+  --w2:#00eeff;--w2g:rgba(0,238,255,0.58);--w2k:rgba(0,238,255,0.08);
+  --w3:#eeff44;--w3g:rgba(238,255,68,0.58);--w3k:rgba(238,255,68,0.08);
+  --w4:#ff88cc;--w4g:rgba(255,136,204,0.58);--w4k:rgba(255,136,204,0.08);
+  --w5:#88ffee;--w5g:rgba(136,255,238,0.58);--w5k:rgba(136,255,238,0.08);
+  --w6:#aaff55;--w6g:rgba(170,255,85,0.58);--w6k:rgba(170,255,85,0.08);
+}
+[data-theme="crimson-red"]{
+  --bg-a:#0d0101;--bg-b:#1a0202;--bg-c:#250404;--bg-d:#320606;
+  --panel:rgba(26,2,2,0.90);--panel2:rgba(13,1,1,0.96);
+  --b0:rgba(255,40,40,0.08);--b1:rgba(255,40,40,0.18);--b2:rgba(255,40,40,0.32);--b3:rgba(255,40,40,0.58);
+  --ink0:#ffdddd;--ink1:#dd7777;--ink2:#882244;--ink3:#441020;
+  --A:#ff2222;--A2:#cc0000;--Ar:255,34,34;
+  --Ag:rgba(255,34,34,0.42);--Ad:rgba(255,34,34,0.12);--Ak:rgba(255,34,34,0.05);
+  --R:#ff2222;--Rg:rgba(255,34,34,0.45);
+  --G:#44ff88;--Gg:rgba(68,255,136,0.40);
+  --Y:#ffdd22;--Yg:rgba(255,221,34,0.40);
+  --nc:rgba(255,50,50,0.20);--gc:rgba(200,30,30,0.055);
+  --w1:#ff3333;--w1g:rgba(255,51,51,0.60);--w1k:rgba(255,51,51,0.08);
+  --w2:#ff8844;--w2g:rgba(255,136,68,0.60);--w2k:rgba(255,136,68,0.08);
+  --w3:#ffdd22;--w3g:rgba(255,221,34,0.60);--w3k:rgba(255,221,34,0.08);
+  --w4:#ff44aa;--w4g:rgba(255,68,170,0.60);--w4k:rgba(255,68,170,0.08);
+  --w5:#ffaaff;--w5g:rgba(255,170,255,0.60);--w5k:rgba(255,170,255,0.08);
+  --w6:#ff7766;--w6g:rgba(255,119,102,0.60);--w6k:rgba(255,119,102,0.08);
+}
+[data-theme="dark-ai"]{
+  --bg-a:#000000;--bg-b:#080808;--bg-c:#101010;--bg-d:#181818;
+  --panel:rgba(8,8,8,0.92);--panel2:rgba(0,0,0,0.97);
+  --b0:rgba(255,255,255,0.05);--b1:rgba(255,255,255,0.11);--b2:rgba(255,255,255,0.20);--b3:rgba(255,255,255,0.40);
+  --ink0:#ffffff;--ink1:#aaaaaa;--ink2:#555555;--ink3:#2a2a2a;
+  --A:#ffffff;--A2:#cccccc;--Ar:255,255,255;
+  --Ag:rgba(255,255,255,0.28);--Ad:rgba(255,255,255,0.08);--Ak:rgba(255,255,255,0.03);
+  --R:#ff3366;--Rg:rgba(255,51,102,0.45);
+  --G:#44ff88;--Gg:rgba(68,255,136,0.40);
+  --Y:#ffdd00;--Yg:rgba(255,221,0,0.40);
+  --nc:rgba(200,200,200,0.12);--gc:rgba(255,255,255,0.04);
+  --w1:#ffffff;--w1g:rgba(255,255,255,0.45);--w1k:rgba(255,255,255,0.05);
+  --w2:#ff4488;--w2g:rgba(255,68,136,0.55);--w2k:rgba(255,68,136,0.07);
+  --w3:#ffdd00;--w3g:rgba(255,221,0,0.55); --w3k:rgba(255,221,0,0.07);
+  --w4:#44ff88;--w4g:rgba(68,255,136,0.55);--w4k:rgba(68,255,136,0.07);
+  --w5:#88aaff;--w5g:rgba(136,170,255,0.55);--w5k:rgba(136,170,255,0.07);
+  --w6:#ff8844;--w6g:rgba(255,136,68,0.55);--w6k:rgba(255,136,68,0.07);
+}
+
+/* ═══════════════════════════════════════════════════════════
+   BODY & BACKGROUND
+═══════════════════════════════════════════════════════════ */
+body{
+  background:var(--bg-a);
+  color:var(--ink0);
+  font-family:'Roboto','Share Tech Mono',monospace;
+  transition:background 0.6s ease;
+  cursor:default;
+}
+
+/* Neural net background canvas */
+#neural-bg{position:fixed;inset:0;z-index:0;pointer-events:none}
+
+/* Dot grid */
+#dot-grid{
+  position:fixed;inset:0;z-index:1;pointer-events:none;
+  background-image:
+    radial-gradient(circle,var(--gc) 1px,transparent 1px);
+  background-size:38px 38px;
+  transition:background-image 0.6s;
+}
+
+/* Ambient gradient blobs */
+#ambient{
+  position:fixed;inset:0;z-index:2;pointer-events:none;
+  overflow:hidden;
+}
+.blob{
+  position:absolute;border-radius:50%;
+  filter:blur(80px);opacity:0.12;
+  animation:blob-drift 18s ease-in-out infinite alternate;
+  transition:background 0.6s;
+}
+.blob-1{width:500px;height:400px;top:-100px;left:-80px;background:var(--A);animation-delay:0s}
+.blob-2{width:400px;height:500px;bottom:-120px;right:-80px;background:var(--A2);animation-delay:-9s}
+.blob-3{width:320px;height:320px;top:40%;left:50%;transform:translate(-50%,-50%);background:var(--A);opacity:0.06;animation-delay:-4s}
+@keyframes blob-drift{
+  0%{transform:translate(0,0) scale(1)}
+  33%{transform:translate(30px,-20px) scale(1.05)}
+  66%{transform:translate(-20px,30px) scale(0.97)}
+  100%{transform:translate(20px,10px) scale(1.03)}
+}
+.blob-1,.blob-2,.blob-3{animation:blob-drift 18s ease-in-out infinite alternate}
+.blob-2{animation-name:blob-drift2}
+@keyframes blob-drift2{
+  0%{transform:translate(0,0) scale(1)}
+  50%{transform:translate(-25px,20px) scale(1.04)}
+  100%{transform:translate(15px,-30px) scale(0.98)}
+}
+
+/* Vignette overlay */
+#vignette{
+  position:fixed;inset:0;z-index:3;pointer-events:none;
+  background:radial-gradient(ellipse 80% 80% at 50% 50%,transparent 30%,rgba(0,0,0,0.75) 100%);
+}
+
+/* Scanlines */
+#scanlines{
+  position:fixed;inset:0;z-index:4;pointer-events:none;
+  background:repeating-linear-gradient(
+    0deg,rgba(0,0,0,0.025) 0px,rgba(0,0,0,0.025) 1px,
+    transparent 1px,transparent 4px
+  );
+}
+
+/* Corner brackets */
+.crn{position:fixed;z-index:5;pointer-events:none;width:28px;height:28px;opacity:0.22;transition:border-color 0.6s}
+.crn.tl{top:10px;left:10px;border-top:1.5px solid var(--A);border-left:1.5px solid var(--A)}
+.crn.tr{top:10px;right:10px;border-top:1.5px solid var(--A);border-right:1.5px solid var(--A)}
+.crn.bl{bottom:10px;left:10px;border-bottom:1.5px solid var(--A);border-left:1.5px solid var(--A)}
+.crn.br{bottom:10px;right:10px;border-bottom:1.5px solid var(--A);border-right:1.5px solid var(--A)}
+
+/* Danger vignette */
+#danger-ring{
+  position:fixed;inset:0;z-index:16;pointer-events:none;
+  box-shadow:inset 0 0 0 rgba(255,40,80,0);
+  transition:box-shadow 0.25s;
+}
+#danger-ring.flash{box-shadow:inset 0 0 120px rgba(255,40,80,0.60)}
+#danger-ring.critical{animation:crit 1.1s ease-in-out infinite}
+@keyframes crit{
+  0%,100%{box-shadow:inset 0 0 80px rgba(255,40,80,0.22)}
+  50%{box-shadow:inset 0 0 130px rgba(255,40,80,0.52)}
+}
+
+/* ═══════════════════════════════════════════════════════════
+   GAME SHELL
+═══════════════════════════════════════════════════════════ */
+#app{
+  position:relative;z-index:6;
+  width:100%;height:100dvh;
+  display:flex;flex-direction:column;
+}
+
+/* ─── HUD TOP BAR ─── */
+#hud{
+  display:flex;align-items:center;justify-content:space-between;
+  height:56px;padding:0 18px;flex-shrink:0;
+  background:var(--panel2);
+  border-bottom:1px solid var(--b1);
+  backdrop-filter:blur(28px);-webkit-backdrop-filter:blur(28px);
+  position:relative;z-index:20;
+  transition:background 0.6s,border-color 0.6s;
+}
+#hud::after{
+  content:'';position:absolute;inset-x:0;bottom:0;height:1px;
+  background:linear-gradient(90deg,transparent,var(--Ag) 40%,var(--Ag) 60%,transparent);
+  opacity:0.7;pointer-events:none;
+}
+
+/* Brand */
+.brand{display:flex;align-items:center;gap:9px;flex-shrink:0}
+.brand-hex{
+  width:30px;height:30px;border-radius:7px;
+  background:var(--Ad);border:1.5px solid var(--A);
+  display:flex;align-items:center;justify-content:center;
+  font-size:14px;
+  box-shadow:0 0 14px var(--Ag),inset 0 0 10px var(--Ak);
+  animation:hex-pulse 2.5s ease-in-out infinite;
+  transition:background 0.6s,border-color 0.6s,box-shadow 0.6s;
+}
+@keyframes hex-pulse{
+  0%,100%{box-shadow:0 0 10px var(--Ag)}
+  50%{box-shadow:0 0 24px var(--Ag),0 0 48px var(--Ak)}
+}
+.brand-name{
+  font-family:'Exo 2',sans-serif;
+  font-size:16px;font-weight:800;letter-spacing:4px;
+  color:var(--A);text-transform:uppercase;
+  transition:color 0.6s;
+}
+
+/* HUD pills cluster */
+.hud-cluster{display:flex;align-items:center;gap:6px;flex:1;justify-content:center}
+.hud-cluster-right{display:flex;align-items:center;gap:6px;flex-shrink:0}
+
+.hpill{
+  display:flex;flex-direction:column;align-items:center;
+  padding:4px 13px;min-width:58px;
+  background:rgba(255,255,255,0.025);
+  border:1px solid var(--b0);border-radius:8px;
+  position:relative;overflow:hidden;
+  transition:border-color 0.3s,background 0.6s;
+}
+.hpill::after{
+  content:'';position:absolute;inset-x:0;top:0;height:1px;
+  background:linear-gradient(90deg,transparent,var(--Ag),transparent);
+  opacity:0;transition:opacity 0.3s;
+}
+.hpill.active::after,.hpill:hover::after{opacity:1}
+.hpill.active{border-color:var(--b1)}
+
+.plabel{
+  font-size:7px;letter-spacing:2.5px;text-transform:uppercase;
+  color:var(--ink2);margin-bottom:2px;line-height:1;
+  transition:color 0.6s;
+}
+.pval{
+  font-family:'Exo 2',sans-serif;
+  font-size:17px;font-weight:700;color:var(--ink0);line-height:1;
+  transition:transform 0.12s cubic-bezier(0.34,1.56,0.64,1),color 0.12s,color 0.6s;
+}
+.pval.pop{transform:scale(1.55) !important;color:var(--A) !important}
+.pval.gold{color:var(--Y)}
+
+/* Lives display */
+.hpill-lives{min-width:unset;padding:4px 10px}
+.lives-dots{display:flex;gap:3px;flex-wrap:wrap;max-width:160px;align-items:center}
+.ldot{
+  width:11px;height:11px;border-radius:50%;
+  background:var(--R);
+  box-shadow:0 0 5px var(--Rg);
+  transition:all 0.3s cubic-bezier(0.34,1.56,0.64,1);
+  flex-shrink:0;
+}
+.ldot.dead{background:var(--ink3);box-shadow:none}
+.ldot.dying{animation:dot-die 0.4s ease forwards}
+@keyframes dot-die{
+  0%{transform:scale(1.6);background:var(--R);box-shadow:0 0 12px var(--Rg)}
+  60%{transform:scale(0.4) rotate(20deg)}
+  100%{transform:scale(1);background:var(--ink3);box-shadow:none}
+}
+
+/* Level bar */
+.hpill-prog{padding:4px 10px;min-width:76px}
+.prog-track{
+  width:60px;height:4px;
+  background:var(--b0);border-radius:2px;overflow:hidden;
+  margin-top:4px;
+}
+.prog-fill{
+  height:100%;border-radius:2px;
+  background:linear-gradient(90deg,var(--A),var(--A2));
+  width:0%;
+  transition:width 0.5s ease,background 0.6s;
+  box-shadow:0 0 6px var(--Ag);
+}
+
+/* Combo badge */
+#combo-badge{
+  display:flex;align-items:center;gap:5px;
+  padding:4px 11px;min-width:80px;
+  background:rgba(255,210,0,0.07);
+  border:1px solid rgba(255,210,0,0.20);border-radius:8px;
+  opacity:0;transform:scale(0.7) translateY(6px);
+  transition:opacity 0.25s,transform 0.3s cubic-bezier(0.34,1.56,0.64,1);
+}
+#combo-badge.show{opacity:1;transform:scale(1) translateY(0)}
+.combo-fire{font-size:14px}
+.combo-txt{
+  font-family:'Exo 2',sans-serif;
+  font-size:12px;font-weight:700;color:var(--Y);letter-spacing:1px;
+  transition:color 0.6s;
+}
+
+/* WPM/ACC micro */
+.micro-stats{display:flex;flex-direction:column;gap:3px}
+.mstat{font-size:8px;letter-spacing:1.5px;text-transform:uppercase;color:var(--ink2);transition:color 0.6s}
+.mval{color:var(--ink1);font-weight:600;margin-left:4px;transition:color 0.6s}
+
+/* ─── ARENA ─── */
+#arena{flex:1;position:relative;overflow:hidden;min-height:0}
+canvas#gc{position:absolute;inset:0;width:100%;height:100%;display:block}
+
+/* Level-up banner */
+#lvl-up{
+  position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+  pointer-events:none;z-index:30;
+  opacity:0;transition:opacity 0.3s;
+}
+.lvl-up-inner{
+  font-family:'Exo 2',sans-serif;
+  font-size:clamp(22px,5vw,46px);font-weight:900;letter-spacing:6px;
+  text-align:center;
+  color:var(--Y);
+  text-shadow:0 0 30px var(--Yg),0 0 60px rgba(255,200,0,0.15);
+  transform:scale(0.5);
+  transition:transform 0.45s cubic-bezier(0.34,1.56,0.64,1);
+}
+#lvl-up.show{opacity:1}
+#lvl-up.show .lvl-up-inner{transform:scale(1)}
+
+/* ─── INPUT BAR ─── */
+#input-bar{
+  display:flex;align-items:center;gap:12px;
+  height:60px;padding:0 18px;flex-shrink:0;
+  background:var(--panel2);
+  border-top:1px solid var(--b1);
+  backdrop-filter:blur(28px);-webkit-backdrop-filter:blur(28px);
+  position:relative;z-index:20;
+  transition:background 0.6s,border-color 0.6s;
+}
+#input-bar::before{
+  content:'';position:absolute;inset-x:0;top:0;height:1px;
+  background:linear-gradient(90deg,transparent,var(--Ag) 40%,var(--Ag) 60%,transparent);
+  opacity:0.6;pointer-events:none;
+}
+
+.inp-prompt{
+  font-family:'Exo 2',sans-serif;
+  font-size:18px;font-weight:700;color:var(--A);
+  flex-shrink:0;
+  transition:color 0.6s;
+  user-select:none;
+}
+
+#wi{
+  flex:1;
+  background:transparent;
+  border:1.5px solid var(--b1);border-radius:10px;
+  padding:9px 16px;
+  font-family:'Roboto Mono','Share Tech Mono',monospace;
+  font-size:23px;font-weight:500;
+  color:var(--ink0);letter-spacing:2.5px;
+  caret-color:var(--A);outline:none;
+  transition:border-color 0.2s,box-shadow 0.2s,background 0.2s,color 0.6s;
+}
+#wi::placeholder{color:var(--ink3);font-size:12px;letter-spacing:2px}
+#wi:focus{
+  border-color:var(--A);
+  box-shadow:0 0 0 3px var(--Ak),0 0 22px rgba(var(--Ar),0.08);
+  background:var(--Ak);
+}
+#wi.hit{
+  border-color:var(--G) !important;
+  box-shadow:0 0 0 3px var(--Gg) !important;
+  animation:hit-flash 0.25s ease;
+}
+@keyframes hit-flash{0%{transform:scale(1.01)}50%{transform:scale(1.02)}100%{transform:scale(1)}}
+#wi.miss{
+  border-color:var(--R) !important;
+  box-shadow:0 0 0 3px var(--Rg) !important;
+  animation:miss-shake 0.3s ease;
+}
+@keyframes miss-shake{
+  0%,100%{transform:translateX(0)}
+  20%{transform:translateX(-8px)}
+  60%{transform:translateX(8px)}
+  80%{transform:translateX(-4px)}
+}
+
+.inp-meta{display:flex;flex-direction:column;gap:3px;flex-shrink:0}
+
+/* ═══════════════════════════════════════════════════════════
+   SCREENS
+═══════════════════════════════════════════════════════════ */
+.screen{
+  position:fixed;inset:0;z-index:50;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  background:rgba(0,0,0,0.94);
+  backdrop-filter:blur(36px);-webkit-backdrop-filter:blur(36px);
+  padding:24px 20px;
+  transition:opacity 0.4s,transform 0.45s cubic-bezier(0.34,1.56,0.64,1);
+}
+.screen.gone{opacity:0;pointer-events:none;transform:scale(0.96)}
+
+/* Staggered entrance animation */
+.screen:not(.gone) .s-tag,
+.screen:not(.gone) .s-title,
+.screen:not(.gone) .s-sub,
+.screen:not(.gone) .ticker-wrap,
+.screen:not(.gone) .how-strip,
+.screen:not(.gone) .diff-block,
+.screen:not(.gone) .s-cta,
+.screen:not(.gone) .result-row,
+.screen:not(.gone) #perf-tag{
+  animation:fade-up 0.5s ease both;
+}
+.screen:not(.gone) .s-title{animation-delay:0.05s}
+.screen:not(.gone) .s-sub{animation-delay:0.12s}
+.screen:not(.gone) .ticker-wrap{animation-delay:0.18s}
+.screen:not(.gone) .how-strip{animation-delay:0.24s}
+.screen:not(.gone) .diff-block{animation-delay:0.30s}
+.screen:not(.gone) .s-cta{animation-delay:0.38s}
+.screen:not(.gone) .result-row{animation-delay:0.10s}
+.screen:not(.gone) #perf-tag{animation-delay:0.05s}
+@keyframes fade-up{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
+
+/* Tag badge */
+.s-tag{
+  font-family:'Share Tech Mono',monospace;
+  font-size:8px;letter-spacing:5px;text-transform:uppercase;
+  color:var(--A);margin-bottom:14px;
+  padding:5px 20px;
+  border:1px solid var(--Ad);border-radius:20px;
+  background:var(--Ak);
+  transition:color 0.6s,border-color 0.6s,background 0.6s;
+}
+
+/* Giant title */
+.s-title{
+  font-family:'Exo 2',sans-serif;
+  font-size:clamp(54px,12vw,108px);font-weight:900;line-height:0.88;
+  letter-spacing:-3px;text-align:center;margin-bottom:10px;
+  color:var(--ink0);transition:color 0.6s;
+}
+.s-title .hl{
+  color:transparent;
+  background:linear-gradient(120deg,var(--A),var(--A2) 60%,var(--A));
+  background-size:200%;
+  -webkit-background-clip:text;background-clip:text;
+  animation:shimmer 4s linear infinite;
+  transition:background 0.6s;
+}
+@keyframes shimmer{0%{background-position:200%}100%{background-position:-200%}}
+
+.s-sub{
+  font-size:11px;letter-spacing:1.2px;color:var(--ink2);
+  text-align:center;margin-bottom:26px;max-width:440px;line-height:1.9;
+  transition:color 0.6s;
+}
+
+/* Scrolling ticker */
+.ticker-wrap{
+  width:100%;max-width:580px;overflow:hidden;margin-bottom:22px;
+  mask-image:linear-gradient(90deg,transparent,black 8%,black 92%,transparent);
+}
+.ticker-track{
+  display:flex;gap:8px;width:max-content;
+  animation:tick 26s linear infinite;
+}
+@keyframes tick{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+.t-chip{
+  font-family:'Roboto Mono','Share Tech Mono',monospace;
+  font-size:9px;letter-spacing:2px;color:var(--ink2);white-space:nowrap;
+  padding:4px 12px;
+  border:1px solid var(--b0);border-radius:12px;
+  background:rgba(255,255,255,0.018);
+  transition:color 0.6s,border-color 0.6s;
+}
+
+/* How-to strip */
+.how-strip{
+  display:flex;gap:7px;flex-wrap:wrap;justify-content:center;
+  margin-bottom:24px;max-width:520px;
+}
+.how-chip{
+  font-size:9px;letter-spacing:0.8px;color:var(--ink2);
+  padding:5px 13px;
+  background:rgba(255,255,255,0.02);
+  border:1px solid var(--b0);border-radius:14px;
+  transition:color 0.6s,border-color 0.6s;
+}
+.how-chip strong{color:var(--A);font-weight:700;transition:color 0.6s}
+
+/* Difficulty */
+.diff-block{text-align:center;margin-bottom:26px}
+.diff-label{font-size:7px;letter-spacing:3px;text-transform:uppercase;color:var(--ink2);margin-bottom:10px;transition:color 0.6s}
+.diff-row{display:flex;gap:7px;justify-content:center;flex-wrap:wrap}
+.dbtn{
+  font-family:'Roboto','Share Tech Mono',monospace;
+  font-size:11px;letter-spacing:2px;text-transform:uppercase;
+  padding:9px 20px;border-radius:8px;
+  border:1.5px solid var(--b1);background:transparent;color:var(--ink2);
+  cursor:pointer;
+  transition:all 0.2s;
+}
+.dbtn:hover{border-color:var(--Ag);color:var(--A);background:var(--Ak)}
+.dbtn.sel{
+  border-color:var(--A);color:var(--A);background:var(--Ad);
+  box-shadow:0 0 18px var(--Ak),inset 0 0 12px var(--Ak);
+}
+
+/* CTA button */
+.s-cta{
+  font-family:'Exo 2',sans-serif;
+  font-size:13px;font-weight:800;letter-spacing:6px;text-transform:uppercase;
+  padding:16px 64px;border-radius:10px;border:none;
+  background:var(--A);color:var(--bg-a);
+  cursor:pointer;position:relative;overflow:hidden;
+  box-shadow:0 0 36px var(--Ag),0 8px 24px rgba(0,0,0,0.4);
+  transition:transform 0.15s,box-shadow 0.2s,background 0.6s,color 0.6s;
+}
+.s-cta::before{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(135deg,rgba(255,255,255,0.25),transparent 60%);
+  opacity:0;transition:opacity 0.2s;
+}
+.s-cta:hover{transform:translateY(-4px);box-shadow:0 12px 40px var(--Ag),0 0 80px var(--Ak)}
+.s-cta:hover::before{opacity:1}
+.s-cta:active{transform:scale(0.97)}
+
+/* ── GAME OVER ── */
+.result-row{display:flex;gap:9px;margin-bottom:26px;flex-wrap:wrap;justify-content:center}
+.rcard{
+  min-width:100px;text-align:center;padding:16px 12px;
+  background:rgba(255,255,255,0.025);
+  border:1px solid var(--b1);border-radius:12px;
+  transition:border-color 0.3s,background 0.6s;
+}
+.rcard:hover{border-color:var(--Ag)}
+.rcard-l{font-size:7px;letter-spacing:2.5px;text-transform:uppercase;color:var(--ink2);margin-bottom:6px;transition:color 0.6s}
+.rcard-v{
+  font-family:'Exo 2',sans-serif;font-size:28px;font-weight:800;
+  color:var(--Y);transition:color 0.6s;
+}
+
+#perf-tag{
+  font-family:'Roboto Mono','Share Tech Mono',monospace;
+  font-size:10px;letter-spacing:2px;
+  color:var(--A);margin-bottom:20px;
+  padding:6px 20px;border:1px solid var(--Ad);border-radius:16px;
+  background:var(--Ak);transition:all 0.6s;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   THEME SWITCHER — floating bottom right
+═══════════════════════════════════════════════════════════ */
+#theme-sw{
+  position:fixed;bottom:20px;right:20px;z-index:100;
+  display:flex;flex-direction:column-reverse;align-items:center;gap:8px;
+}
+
+#tsw-btn{
+  width:48px;height:48px;border-radius:50%;cursor:pointer;
+  background:var(--panel2);
+  border:1.5px solid var(--b2);
+  display:flex;align-items:center;justify-content:center;
+  font-size:19px;
+  box-shadow:0 4px 20px rgba(0,0,0,0.5),0 0 16px var(--Ad);
+  backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
+  transition:all 0.3s;user-select:none;
+}
+#tsw-btn:hover{
+  transform:scale(1.14) rotate(20deg);
+  border-color:var(--A);
+  box-shadow:0 6px 28px rgba(0,0,0,0.6),0 0 24px var(--Ag);
+}
+#tsw-btn:active{transform:scale(0.9)}
+
+#tsw-palette{
+  display:flex;flex-direction:column-reverse;gap:7px;
+  opacity:0;transform:translateY(14px) scale(0.85);
+  pointer-events:none;
+  transition:opacity 0.28s,transform 0.32s cubic-bezier(0.34,1.56,0.64,1);
+}
+#tsw-palette.open{opacity:1;transform:translateY(0) scale(1);pointer-events:all}
+
+.tdot{
+  width:38px;height:38px;border-radius:50%;cursor:pointer;
+  border:2.5px solid rgba(255,255,255,0.18);
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:0 2px 12px rgba(0,0,0,0.5);
+  transition:transform 0.2s,border-color 0.2s,box-shadow 0.2s;
+  position:relative;
+}
+.tdot:hover{transform:scale(1.2);border-color:rgba(255,255,255,0.65)}
+.tdot.on{border-color:#fff;box-shadow:0 0 14px rgba(255,255,255,0.45)}
+.tdot[data-t="neon-blue"]   {background:conic-gradient(#00ccff 0%,#0055ff 50%,#00ccff 100%)}
+.tdot[data-t="cyber-purple"]{background:conic-gradient(#bb44ff 0%,#4400aa 50%,#bb44ff 100%)}
+.tdot[data-t="emerald-green"]{background:conic-gradient(#00ff88 0%,#006633 50%,#00ff88 100%)}
+.tdot[data-t="crimson-red"]  {background:conic-gradient(#ff2222 0%,#880000 50%,#ff2222 100%)}
+.tdot[data-t="dark-ai"]      {background:conic-gradient(#888 0%,#111 50%,#888 100%)}
+
+/* Tooltip */
+.tdot::after{
+  content:attr(data-label);
+  position:absolute;right:50px;
+  font-family:'Roboto','Share Tech Mono',monospace;
+  font-size:9px;letter-spacing:1.5px;text-transform:uppercase;
+  color:var(--ink1);white-space:nowrap;
+  background:var(--panel2);border:1px solid var(--b1);
+  padding:3px 9px;border-radius:5px;
+  opacity:0;pointer-events:none;transition:opacity 0.2s;
+  backdrop-filter:blur(12px);
+}
+.tdot:hover::after{opacity:1}
+
+/* ═══════════════════════════════════════════════════════════
+   VERSION TAG
+═══════════════════════════════════════════════════════════ */
+#ver{
+  position:fixed;bottom:12px;left:16px;z-index:90;
+  font-size:8px;letter-spacing:1.5px;color:var(--ink3);
+  transition:color 0.6s;user-select:none;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   RESPONSIVE
+═══════════════════════════════════════════════════════════ */
+@media(max-width:640px){
+  #hud{height:48px;padding:0 10px}
+  .brand-name{display:none}
+  .hpill{padding:4px 9px;min-width:48px}
+  .pval{font-size:14px}
+  .hud-cluster{gap:4px}
+  .micro-stats{display:none}
+  .ldot{width:9px;height:9px}
+  .lives-dots{max-width:125px}
+  #input-bar{height:52px;padding:0 12px;gap:8px}
+  #wi{font-size:20px;padding:7px 12px;letter-spacing:1.5px}
+  .inp-meta{display:none}
+  #theme-sw{bottom:14px;right:14px}
+  #tsw-btn{width:40px;height:40px;font-size:16px}
+  .tdot{width:32px;height:32px}
+  .s-title{letter-spacing:-1px}
+  .s-cta{padding:13px 40px;letter-spacing:4px}
+}
+</style>
+</head>
+<body>
+
+<!-- BACKGROUND -->
+<canvas id="neural-bg"></canvas>
+<div id="dot-grid"></div>
+<div id="ambient"><div class="blob blob-1"></div><div class="blob blob-2"></div><div class="blob blob-3"></div></div>
+<div id="vignette"></div>
+<div id="scanlines"></div>
+<div class="crn tl"></div><div class="crn tr"></div>
+<div class="crn bl"></div><div class="crn br"></div>
+<div id="danger-ring"></div>
+
+<!-- START SCREEN -->
+<div class="screen" id="s-start">
+  <div class="s-tag">&#x2B22; AI TYPING ARENA &nbsp;·&nbsp; v5.0</div>
+  <div class="s-title">NEX<span class="hl">TYPE</span></div>
+  <div class="ticker-wrap"><div class="ticker-track" id="ticker"></div></div>
+  <div class="s-sub">
+    Action &nbsp;·&nbsp; Nature &nbsp;·&nbsp; Places &nbsp;·&nbsp; Colors &nbsp;·&nbsp; Everyday Words<br>
+    Type the falling words before they hit the ground. Survive 10 lives. Beat your best score.
+  </div>
+  <div class="how-strip">
+    <div class="how-chip"><strong>TYPE</strong> any falling word instantly</div>
+    <div class="how-chip">Letters <strong>auto-vanish</strong> as you type</div>
+    <div class="how-chip"><strong>COMBOS</strong> multiply your score</div>
+    <div class="how-chip">10 lives &mdash; every miss costs one</div>
+    <div class="how-chip">Speed &amp; density scale every <strong>10 words</strong></div>
+  </div>
+  <div class="diff-block">
+    <div class="diff-label">// difficulty</div>
+    <div class="diff-row">
+      <button class="dbtn sel" data-d="easy">Easy</button>
+      <button class="dbtn" data-d="normal">Normal</button>
+      <button class="dbtn" data-d="hard">Hard</button>
+      <button class="dbtn" data-d="insane">Insane</button>
+    </div>
+  </div>
+  <button class="s-cta" id="btn-start">INITIALIZE &rarr;</button>
+</div>
+
+<!-- GAME OVER SCREEN -->
+<div class="screen gone" id="s-over">
+  <div class="s-tag">// SESSION TERMINATED</div>
+  <div class="s-title">SYS<span class="hl">FAIL</span></div>
+  <div class="s-sub" id="over-msg">The neural network overwhelmed you.</div>
+  <div id="perf-tag">PERFORMANCE ANALYSIS</div>
+  <div class="result-row">
+    <div class="rcard"><div class="rcard-l">Score</div><div class="rcard-v" id="r-score">0</div></div>
+    <div class="rcard"><div class="rcard-l">Words</div><div class="rcard-v" id="r-words">0</div></div>
+    <div class="rcard"><div class="rcard-l">Level</div><div class="rcard-v" id="r-level">1</div></div>
+    <div class="rcard"><div class="rcard-l">Best Combo</div><div class="rcard-v" id="r-combo">0</div></div>
+    <div class="rcard"><div class="rcard-l">WPM</div><div class="rcard-v" id="r-wpm">0</div></div>
+    <div class="rcard"><div class="rcard-l">Accuracy</div><div class="rcard-v" id="r-acc">0%</div></div>
+  </div>
+  <button class="s-cta" id="btn-restart">REINITIALIZE &rarr;</button>
+</div>
+
+<!-- APP SHELL -->
+<div id="app">
+  <!-- HUD -->
+  <div id="hud">
+    <div class="brand">
+      <div class="brand-hex">&#x2B22;</div>
+      <div class="brand-name">NEXTYPE</div>
+    </div>
+    <div class="hud-cluster">
+      <div class="hpill active" id="pill-score">
+        <div class="plabel">Score</div>
+        <div class="pval gold" id="h-score">0</div>
+      </div>
+      <div class="hpill">
+        <div class="plabel">Level</div>
+        <div class="pval" id="h-lvl">1</div>
+      </div>
+      <div class="hpill hpill-lives">
+        <div class="plabel">Lives</div>
+        <div class="lives-dots" id="lives-dots"></div>
+      </div>
+      <div class="hpill hpill-prog">
+        <div class="plabel">Progress</div>
+        <div class="prog-track"><div class="prog-fill" id="prog-fill"></div></div>
+      </div>
+      <div id="combo-badge">
+        <span class="combo-fire">&#x1F525;</span>
+        <span class="combo-txt">&times;<span id="combo-n">0</span></span>
+      </div>
+    </div>
+    <div class="hud-cluster-right">
+      <div class="micro-stats">
+        <div class="mstat">WPM <span class="mval" id="m-wpm">&mdash;</span></div>
+        <div class="mstat">ACC <span class="mval" id="m-acc">&mdash;</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ARENA -->
+  <div id="arena">
+    <canvas id="gc"></canvas>
+    <div id="lvl-up"><div class="lvl-up-inner" id="lvl-txt">LEVEL UP</div></div>
+  </div>
+
+  <!-- INPUT BAR -->
+  <div id="input-bar">
+    <span class="inp-prompt">&rsaquo;</span>
+    <input id="wi" type="text"
+      autocomplete="off" autocorrect="off"
+      autocapitalize="off" spellcheck="false"
+      placeholder="type any falling word&hellip;">
+    <div class="inp-meta">
+      <div class="mstat">WORDS <span class="mval" id="i-words">0</span></div>
+      <div class="mstat">COMBO <span class="mval" id="i-combo">&times;0</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- THEME SWITCHER -->
+<div id="theme-sw">
+  <button id="tsw-btn" title="Switch theme">&#x1F3A8;</button>
+  <div id="tsw-palette">
+    <div class="tdot on"  data-t="neon-blue"    data-label="Neon Blue"></div>
+    <div class="tdot"     data-t="cyber-purple" data-label="Cyber Purple"></div>
+    <div class="tdot"     data-t="emerald-green"data-label="Emerald"></div>
+    <div class="tdot"     data-t="crimson-red"  data-label="Crimson Red"></div>
+    <div class="tdot"     data-t="dark-ai"      data-label="Dark AI"></div>
+  </div>
+</div>
+
+<div id="ver">NexType v5.0 &nbsp;&middot;&nbsp; AI Typing Arena &nbsp;&middot;&nbsp; Portfolio Edition</div>
+
+<!-- ============================================================
+     JAVASCRIPT ENGINE
+============================================================ -->
+<script>
+'use strict';
+
+/* ════════════════════════════════════════════════════════
+   WORD BANK — Simple, clear English words only
+   Easy to read, type, and understand for all players
+════════════════════════════════════════════════════════ */
+const RAW_WORDS = `
+run jump skip hop walk fly swim dive roll spin leap
+cat dog bird fish bear wolf deer fox owl hawk snake
+sun moon star rain snow wind fire cloud river lake
+red blue green bold fast slow high low good best
+home door room wall floor roof light dark warm cold
+book read word text note list task plan goal step
+tree leaf bark root seed fruit vine stem bud bloom
+hand foot arm leg face head neck back side palm
+food salt rice milk soup cake loaf beef corn soup
+ball game play win lose draw team race pass kick
+mind heart soul body brain nerve bone skin form
+road path lane fork hill rock cliff cave arch bay
+art draw paint draw sing dance write build make fix
+word line page turn flip scan read sort find clear
+cup dish bowl fork spoon tray rack shelf box jar
+joy calm hope love care kind warm safe bold free
+rock sand dust ash mud clay soil rock pit mound
+sea wave tide surf foam beach shore cliff cove cape
+day week year noon dawn dusk time hour past now
+coat vest belt boot sock hat glove scarf tie cap
+bus car van jet ship boat raft sled bike tram train
+ring bell horn drum flute harp string beat note tone
+card chip wire plug port link node flow bank store
+lock key gate fence wall post sign mark flag pole
+web site page link icon tab bar menu drop push pull
+map grid zone row cell slot cell tile grid tab row
+chat talk send type echo call ping text buzz post
+pack bag wrap seal send ship sort load move haul
+act fact plan task step move draw link pair list
+form fill sort send keep drop save undo redo copy
+blue bold base beam bind bite blow born both brew
+calm card cast cave chip clip clue coat code coil
+core cost crop cube curl
+dark dash data date dawn deal deep deny desk dial
+dive dome door down drop drum dual dump dust
+earn easy edge emit epic even ever exit eyes
+face fact fade fail fair fall fame fast feel fell
+fill film find fire firm fish five flag flat flew
+flip flow foam fold fond font fork form free fuel
+full fund fuse
+gain gale game gate gave gaze glad glow glue gone
+good grab gray grew grid grin grip grow gulf
+half halt hand hard harm heat held help here hide
+high hill hint hold hole home hook hope horn host
+hour hung hunt hurt
+icon idle inch into iron isle item
+jump just keen kept king knit know
+land lane lark last late lead leaf lean leap left
+lend less lift like link list live lock long look
+loop loud love luck
+made mail main make mark maze mean meet melt
+mesh mild mile milk mill mind mint miss mix mode
+mold moon more move much must
+nail name near neat next nick node noon norm note
+oath only open oval over
+pace pack page pair park part pass path peak pick
+pile pink pipe plan play plot plus pole pond pool
+port pour
+race rack rain rank rate read real reed reef rest
+rich ride ring rise road rock role root rope rose
+rule rune rush
+safe said sail salt same sand save scan seal seek
+self send sent ship shot show shut side sigh silk
+silo sink site size skin skip slim slip slot slow
+snap soft soil sold sole some song sort soul span
+spin star stay stem step stir stop such suit surf
+swift swim
+tail take talk tall tape task tent test text than
+then they thin tide tile time tiny toll tone took
+tool torn town tram trap tree trim trio trip true
+tune turn twin type
+unit upon urge user
+vale veil vibe view vine volt vote
+wade wait wake walk warm warp wave weld well went
+west wide wild will wind wine wing wink wire wise
+wish wolf word wore work worn wove wrap writ wry
+yard year zero zone zoom hercules computer
+holiday morning picture teacher country station
+brother kitchen monster diamond chocolate 
+language building hospital exercise elephant 
+umbrella internet backpack lightningfast
+ultrareaction
+hyperactive
+megacomputer
+cybersecurity
+multiplayer
+counterattack
+battlefield
+championship
+speedometer
+microprocessor
+cryptography
+electromagnetism
+counterproductive
+intercontinental
+telecommunication
+adventure
+electric
+favorite
+mountain
+business
+important
+creative
+solution
+triangle
+dinosaur
+keyboard
+shopping
+engineer
+footballer
+beautiful
+dangerous
+fantastic
+education
+telephone
+different
+`.trim().split(/\s+/).filter(w => /^[a-zA-Z]{2,8}$/.test(w));
+
+const WORDS = [...new Set(RAW_WORDS)];
+
+/* ════════════════════════════════════════════════════════
+   TICKER
+════════════════════════════════════════════════════════ */
+const TICK_SAMPLE = [
+  'jump','swift','bloom','storm','river','flame','quest','brave',
+  'stone','orbit','spark','drift','frost','shine','pulse','grove',
+  'trace','glide','bound','crisp','steep','lunar','tidal','brisk',
+  'flare','crest','swirl','gleam','forge','scout','blaze','radar',
+];
+const tickerEl = document.getElementById('ticker');
+[...TICK_SAMPLE,...TICK_SAMPLE].forEach(w => {
+  const el = document.createElement('div');
+  el.className = 't-chip';
+  el.textContent = w;
+  tickerEl.appendChild(el);
+});
+
+/* ════════════════════════════════════════════════════════
+   AUDIO — synthesized, no external files
+════════════════════════════════════════════════════════ */
+let audioCtx = null;
+function getACtx() {
+  if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  return audioCtx;
+}
+function wake() { try { const a = getACtx(); if (a.state === 'suspended') a.resume(); } catch(e){} }
+
+function tone(freq, type, dur, gain, t0 = 0) {
+  try {
+    const ac = getACtx();
+    const o  = ac.createOscillator();
+    const g  = ac.createGain();
+    const f  = ac.createBiquadFilter();
+    f.type = 'lowpass'; f.frequency.value = freq * 3;
+    o.type = type; o.frequency.value = freq;
+    o.connect(f); f.connect(g); g.connect(ac.destination);
+    const t = ac.currentTime + t0;
+    g.gain.setValueAtTime(gain, t);
+    g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+    o.start(t); o.stop(t + dur + 0.02);
+  } catch(e){}
+}
+
+const SFX = {
+  key:     ()        => tone(1100,'sine',0.04,0.025),
+  destroy: (len)     => {
+    const b = 440 - len * 16;
+    tone(b,       'sawtooth', 0.15, 0.065);
+    tone(b * 1.5, 'square',   0.10, 0.04, 0.06);
+    tone(b * 2,   'sine',     0.08, 0.025, 0.13);
+  },
+  combo:   (n)       => {
+    const f = 280 + n * 28;
+    tone(f,        'triangle', 0.20, 0.055);
+    tone(f * 1.33, 'sine',     0.17, 0.04,  0.09);
+  },
+  miss:    ()        => {
+    tone(110, 'sawtooth', 0.28, 0.09);
+    tone(80,  'sawtooth', 0.22, 0.055, 0.09);
+  },
+  levelup: ()        => {
+    [440,550,660,880,1100].forEach((f,i) => tone(f,'triangle',0.22,0.055,i*0.07));
+  },
+};
+
+/* ════════════════════════════════════════════════════════
+   DIFFICULTY CONFIG
+════════════════════════════════════════════════════════ */
+const DIFF = {
+  easy:   { spawnMs: 3200, baseSpd: 0.26, spdInc: 0.022, maxLen: 6,  lives: 10 },
+  normal: { spawnMs: 2200, baseSpd: 0.50, spdInc: 0.046, maxLen: 9,  lives: 10 },
+  hard:   { spawnMs: 1400, baseSpd: 0.80, spdInc: 0.075, maxLen: 12, lives: 10 },
+  insane: { spawnMs: 820,  baseSpd: 1.28, spdInc: 0.13,  maxLen: 99, lives: 10 },
+};
+
+/* ════════════════════════════════════════════════════════
+   CANVAS + RESIZE
+════════════════════════════════════════════════════════ */
+const C  = document.getElementById('gc');
+const cx = C.getContext('2d');
+let W = 0, H = 0, DPR = 1;
+
+function resize() {
+  DPR = window.devicePixelRatio || 1;
+  W   = C.offsetWidth;
+  H   = C.offsetHeight;
+  C.width  = W * DPR;
+  C.height = H * DPR;
+  cx.scale(DPR, DPR);
+}
+window.addEventListener('resize', () => { resize(); });
+
+/* ════════════════════════════════════════════════════════
+   NEURAL NETWORK BACKGROUND
+════════════════════════════════════════════════════════ */
+const BG  = document.getElementById('neural-bg');
+const bgx = BG.getContext('2d');
+let bgNodes = [];
+
+function buildBgNodes() {
+  BG.width  = window.innerWidth;
+  BG.height = window.innerHeight;
+  bgNodes = Array.from({ length: 65 }, () => ({
+    x:  Math.random() * BG.width,
+    y:  Math.random() * BG.height,
+    vx: (Math.random() - 0.5) * 0.28,
+    vy: (Math.random() - 0.5) * 0.28,
+    r:  0.7 + Math.random() * 2.2,
+    a:  0.12 + Math.random() * 0.40,
+  }));
+}
+
+function animateBg() {
+  bgx.clearRect(0, 0, BG.width, BG.height);
+  const cs   = getComputedStyle(document.documentElement);
+  const nc   = cs.getPropertyValue('--nc').trim();
+
+  // Edges
+  for (let i = 0; i < bgNodes.length; i++) {
+    for (let j = i + 1; j < bgNodes.length; j++) {
+      const dx   = bgNodes[i].x - bgNodes[j].x;
+      const dy   = bgNodes[i].y - bgNodes[j].y;
+      const dist = Math.sqrt(dx*dx + dy*dy);
+      if (dist < 150) {
+        const t = 1 - dist / 150;
+        bgx.beginPath();
+        bgx.strokeStyle = nc.replace(/[\d.]+\)$/, `${(t * 0.10).toFixed(3)})`);
+        bgx.lineWidth = 0.7;
+        bgx.moveTo(bgNodes[i].x, bgNodes[i].y);
+        bgx.lineTo(bgNodes[j].x, bgNodes[j].y);
+        bgx.stroke();
+      }
+    }
+  }
+
+  // Nodes
+  bgNodes.forEach(n => {
+    bgx.beginPath();
+    bgx.arc(n.x, n.y, n.r, 0, Math.PI * 2);
+    bgx.fillStyle = nc;
+    bgx.fill();
+    n.x += n.vx; n.y += n.vy;
+    if (n.x < 0 || n.x > BG.width)  n.vx *= -1;
+    if (n.y < 0 || n.y > BG.height) n.vy *= -1;
+  });
+
+  requestAnimationFrame(animateBg);
+}
+
+window.addEventListener('resize', () => {
+  BG.width  = window.innerWidth;
+  BG.height = window.innerHeight;
+});
+
+/* ════════════════════════════════════════════════════════
+   THEME MANAGER
+════════════════════════════════════════════════════════ */
+let theme = 'neon-blue';
+
+function applyTheme(t) {
+  document.documentElement.setAttribute('data-theme', t);
+  theme = t;
+  document.querySelectorAll('.tdot').forEach(d =>
+    d.classList.toggle('on', d.dataset.t === t)
+  );
+}
+
+const tswBtn     = document.getElementById('tsw-btn');
+const tswPalette = document.getElementById('tsw-palette');
+let tswOpen = false;
+
+tswBtn.addEventListener('click', e => {
+  e.stopPropagation();
+  tswOpen = !tswOpen;
+  tswPalette.classList.toggle('open', tswOpen);
+});
+document.addEventListener('click', () => {
+  if (tswOpen) { tswOpen = false; tswPalette.classList.remove('open'); }
+});
+document.querySelectorAll('.tdot').forEach(dot =>
+  dot.addEventListener('click', e => {
+    e.stopPropagation();
+    applyTheme(dot.dataset.t);
+    tswOpen = false;
+    tswPalette.classList.remove('open');
+  })
+);
+
+/* ════════════════════════════════════════════════════════
+   CSS COLOR HELPERS
+════════════════════════════════════════════════════════ */
+function css(v) { return getComputedStyle(document.documentElement).getPropertyValue(v).trim(); }
+function wCols(i) {
+  return {
+    s: css(`--w${i}`),
+    g: css(`--w${i}g`),
+    k: css(`--w${i}k`),
+  };
+}
+
+/* ════════════════════════════════════════════════════════
+   GAME STATE
+════════════════════════════════════════════════════════ */
+const MAX_LIVES = 10;
+let entities   = [];  // active word objects
+let particles  = [];  // explosion particles
+let floaters   = [];  // +score floating text
+let gs         = {};  // game state
+let diff       = 'easy';
+let running    = false;
+let rafId, spawnTimer;
+let charHits   = 0, charMiss = 0, tStart = 0;
+
+/* ════════════════════════════════════════════════════════
+   HEARTS / LIVES DOTS
+════════════════════════════════════════════════════════ */
+function buildLives(n) {
+  const el = document.getElementById('lives-dots');
+  el.innerHTML = '';
+  for (let i = 0; i < MAX_LIVES; i++) {
+    const d = document.createElement('div');
+    d.id    = `ld${i}`;
+    d.className = 'ldot' + (i < n ? '' : ' dead');
+    el.appendChild(d);
+  }
+}
+
+function killDot(idx) {
+  const d = document.getElementById(`ld${idx}`);
+  if (d) { d.classList.add('dead', 'dying'); }
+}
+
+/* ════════════════════════════════════════════════════════
+   HUD UPDATE
+════════════════════════════════════════════════════════ */
+function hudUpdate() {
+  document.getElementById('h-score').textContent = gs.score.toLocaleString();
+  document.getElementById('h-lvl').textContent   = gs.level;
+  document.getElementById('combo-n').textContent  = gs.combo;
+  document.getElementById('i-combo').textContent = '×' + gs.combo;
+  document.getElementById('i-words').textContent = gs.destroyed;
+
+  document.getElementById('combo-badge').classList.toggle('show', gs.combo >= 3);
+  document.getElementById('prog-fill').style.width = ((gs.destroyed % 10) / 10 * 100) + '%';
+
+  const elapsed = (Date.now() - tStart) / 60000 || 0.001;
+  const wpm = Math.round((charHits / 5) / elapsed);
+  const att = charHits + charMiss;
+  const acc = att > 5 ? Math.round(charHits / att * 100) : 100;
+
+  document.getElementById('m-wpm').textContent = wpm > 0 ? wpm : '—';
+  document.getElementById('m-acc').textContent = att > 10 ? acc + '%' : '—';
+}
+
+function popVal(id) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.classList.add('pop');
+  setTimeout(() => el.classList.remove('pop'), 200);
+}
+
+/* ════════════════════════════════════════════════════════
+   GAME INIT
+════════════════════════════════════════════════════════ */
+function initGame() {
+  entities = []; particles = []; floaters = [];
+  const d = DIFF[diff];
+  gs = { score: 0, level: 1, lives: d.lives, destroyed: 0, combo: 0, bestCombo: 0 };
+  charHits = 0; charMiss = 0; tStart = Date.now();
+  document.getElementById('wi').value = '';
+  buildLives(d.lives);
+  hudUpdate();
+}
+
+/* ════════════════════════════════════════════════════════
+   WORD SPAWNER
+════════════════════════════════════════════════════════ */
+function spawnWord() {
+  if (!running) return;
+  const d    = DIFF[diff];
+  const pool = WORDS.filter(w => w.length <= d.maxLen);
+  const txt  = pool[Math.floor(Math.random() * pool.length)].toLowerCase();
+  const ci   = Math.ceil(Math.random() * 6);
+
+  // Measure width
+  cx.font = `700 26px 'Roboto Mono','Share Tech Mono',monospace`;
+  const baseW = cx.measureText(txt).width;
+
+  // Font size depends on length — bigger for readability
+  const fz = Math.max(20, 30 - Math.floor(txt.length * 0.8));
+  cx.font = `700 ${fz}px 'Roboto Mono','Share Tech Mono',monospace`;
+  const tw = cx.measureText(txt).width;
+
+  const PAD = 24;
+  const x   = PAD + Math.random() * Math.max(10, W - tw - PAD * 2);
+  const spd = (d.baseSpd + (gs.level - 1) * d.spdInc) * (0.75 + Math.random() * 0.52);
+
+  // Build per-character letter objects for smooth destruction
+  const letters = [];
+  let cx2 = 0;
+  for (let i = 0; i < txt.length; i++) {
+    const cw = cx.measureText(txt[i]).width;
+    letters.push({ ch: txt[i], x: cx2, w: cw, alpha: 1, scale: 1, dying: false, dyingSpeed: 0 });
+    cx2 += cw;
+  }
+
+  entities.push({
+    txt, x, y: -60, tw, fz, ci, spd, letters,
+    typedLen: 0,
+    matched: false, dying: false,
+    alpha: 1, bodyAlpha: 1,
+    glow: 0,
+    wobble: Math.random() * Math.PI * 2,
+    wobbleAmp: 0.6 + Math.random() * 1.4,
+    wobbleSpd: 0.018 + Math.random() * 0.035,
+    spawnTime: Date.now(),
+  });
+}
+
+function startSpawnCycle() {
+  clearInterval(spawnTimer);
+  const base     = DIFF[diff].spawnMs;
+  const interval = Math.max(400, base - (gs.level - 1) * 50);
+  spawnTimer = setInterval(() => {
+    if (entities.filter(e => !e.matched).length < 14) spawnWord();
+  }, interval);
+}
+
+/* ════════════════════════════════════════════════════════
+   PARTICLE SYSTEM
+════════════════════════════════════════════════════════ */
+function burst(bx, by, ci, len) {
+  const c = wCols(ci);
+  const n = 18 + len * 3;
+
+  // Radial dots
+  for (let i = 0; i < n; i++) {
+    const ang = (Math.PI * 2 * i / n) + (Math.random() - 0.5) * 0.8;
+    const spd = 1.5 + Math.random() * 5.5;
+    particles.push({
+      kind: 'dot',
+      x: bx, y: by,
+      vx: Math.cos(ang) * spd,
+      vy: Math.sin(ang) * spd - 1.5,
+      r: 1.6 + Math.random() * 3.8,
+      alpha: 1, color: c.s, shrink: 0.93,
+    });
+  }
+
+  // Spark streaks
+  for (let i = 0; i < 8; i++) {
+    const ang = Math.random() * Math.PI * 2;
+    const spd = 3 + Math.random() * 7;
+    particles.push({
+      kind: 'spark',
+      x: bx, y: by,
+      vx: Math.cos(ang) * spd, vy: Math.sin(ang) * spd - 2,
+      ax: Math.cos(ang), ay: Math.sin(ang),
+      len: 8 + Math.random() * 16,
+      alpha: 1, r: 0.8, color: c.s, shrink: 0.88,
+    });
+  }
+
+  // Expanding rings
+  particles.push({ kind: 'ring', x: bx, y: by, r: 4, alpha: 0.9, spd: 3.5, color: c.s });
+  particles.push({ kind: 'ring', x: bx, y: by, r: 2, alpha: 0.55, spd: 2.2, color: '#fff' });
+
+  // Glitch chars
+  const glitch = ['0','1','>','<','#','*','!','@','%','&'];
+  for (let i = 0; i < 6; i++) {
+    particles.push({
+      kind: 'glyph',
+      x: bx + (Math.random()-0.5)*40,
+      y: by + (Math.random()-0.5)*25,
+      ch: glitch[Math.floor(Math.random()*glitch.length)],
+      vy: -1.8 - Math.random()*2.2, vx: (Math.random()-0.5)*1.8,
+      alpha: 1, color: c.g,
+    });
+  }
+}
+
+function addFloat(x, y, txt, color) {
+  floaters.push({ x, y, txt, color, alpha: 1, vy: -2.4, vx: (Math.random()-0.5)*1.0 });
+}
+
+/* ════════════════════════════════════════════════════════
+   DESTROY WORD
+════════════════════════════════════════════════════════ */
+function destroyWord(idx) {
+  const e = entities[idx];
+  e.matched = true;
+  e.dying   = true;
+
+  // Kill any remaining letters
+  e.letters.forEach(l => {
+    if (!l.dying) {
+      l.dying = true;
+      l.dyingSpeed = 0.06 + Math.random() * 0.06;
+    }
+  });
+
+  const ex = e.x + e.tw / 2;
+  const ey = e.y - e.fz / 2;
+
+  burst(ex, ey, e.ci, e.txt.length);
+
+  SFX.destroy(e.txt.length);
+  gs.combo++;
+  if (gs.combo > gs.bestCombo) gs.bestCombo = gs.combo;
+  if (gs.combo >= 3) SFX.combo(gs.combo);
+
+  const mult = 1 + (gs.combo - 1) * 0.40;
+  const pts  = Math.round(e.txt.length * 15 * mult * gs.level);
+  gs.score     += pts;
+  gs.destroyed++;
+
+  const c     = wCols(e.ci);
+  const label = gs.combo >= 3 ? `+${pts} 🔥×${gs.combo}` : `+${pts}`;
+  addFloat(ex, e.y - e.fz - 14, label, c.s);
+
+  const newLvl = Math.floor(gs.destroyed / 10) + 1;
+  if (newLvl > gs.level) {
+    gs.level = newLvl;
+    showLevelUp();
+    startSpawnCycle();
+    SFX.levelup();
+  }
+
+  hudUpdate();
+  popVal('h-score');
+}
+
+function showLevelUp() {
+  const el  = document.getElementById('lvl-up');
+  const txt = document.getElementById('lvl-txt');
+  txt.textContent = `LEVEL ${gs.level} ↑`;
+  el.classList.add('show');
+  setTimeout(() => el.classList.remove('show'), 1800);
+}
+
+/* ════════════════════════════════════════════════════════
+   MISS WORD
+════════════════════════════════════════════════════════ */
+function missWord(idx) {
+  entities.splice(idx, 1);
+  const lifeIdx = gs.lives - 1;
+  gs.lives--;
+  gs.combo = 0;
+  SFX.miss();
+  killDot(lifeIdx);
+
+  const dr = document.getElementById('danger-ring');
+  dr.classList.add('flash');
+  setTimeout(() => dr.classList.remove('flash'), 450);
+  dr.classList.toggle('critical', gs.lives <= 3);
+
+  hudUpdate();
+  if (gs.lives <= 0) endGame();
+}
+
+/* ════════════════════════════════════════════════════════
+   GAME OVER
+════════════════════════════════════════════════════════ */
+function endGame() {
+  running = false;
+  clearInterval(spawnTimer);
+  cancelAnimationFrame(rafId);
+  document.getElementById('danger-ring').classList.remove('critical','flash');
+
+  const elapsed = (Date.now() - tStart) / 60000 || 0.001;
+  const wpm     = Math.round((charHits / 5) / elapsed);
+  const att     = charHits + charMiss;
+  const acc     = att > 0 ? Math.round(charHits / att * 100) : 100;
+
+  const msgs = [
+    'The words were too fast for you this time.',
+    'You ran out of lives — try again!',
+    'So close! One more round and you will do better.',
+    'Too many words slipped past you.',
+    'Game over — your fingers need more practice.',
+    'The words beat you — but not for long!',
+  ];
+
+  document.getElementById('r-score').textContent  = gs.score.toLocaleString();
+  document.getElementById('r-words').textContent  = gs.destroyed;
+  document.getElementById('r-level').textContent  = gs.level;
+  document.getElementById('r-combo').textContent  = gs.bestCombo;
+  document.getElementById('r-wpm').textContent    = wpm;
+  document.getElementById('r-acc').textContent    = acc + '%';
+  document.getElementById('over-msg').textContent = msgs[Math.floor(Math.random()*msgs.length)];
+  document.getElementById('perf-tag').textContent =
+    `WPM: ${wpm}  ·  ACC: ${acc}%  ·  WORDS: ${gs.destroyed}  ·  LEVEL: ${gs.level}`;
+
+  showScreen('s-over');
+}
+
+/* ════════════════════════════════════════════════════════
+   RENDER — DRAW PASS
+════════════════════════════════════════════════════════ */
+function rr(c, x, y, w, h, r) {
+  /* rounded rect helper */
+  c.beginPath();
+  c.moveTo(x+r, y);
+  c.lineTo(x+w-r, y); c.quadraticCurveTo(x+w,y, x+w,y+r);
+  c.lineTo(x+w, y+h-r); c.quadraticCurveTo(x+w,y+h, x+w-r,y+h);
+  c.lineTo(x+r, y+h); c.quadraticCurveTo(x,y+h, x,y+h-r);
+  c.lineTo(x, y+r); c.quadraticCurveTo(x,y, x+r,y);
+  c.closePath();
+}
+
+function draw() {
+  cx.clearRect(0, 0, W, H);
+
+  /* Ground line */
+  cx.save();
+  cx.strokeStyle = 'rgba(255,40,70,0.10)';
+  cx.lineWidth = 1;
+  cx.setLineDash([5, 15]);
+  cx.beginPath(); cx.moveTo(0, H - 1); cx.lineTo(W, H - 1);
+  cx.stroke();
+  cx.setLineDash([]);
+  cx.restore();
+
+  const typed = wi.value.toLowerCase().trim();
+  const ink0  = css('--ink0');
+
+  /* ── ENTITIES (words) ── */
+  for (let i = 0; i < entities.length; i++) {
+    const e = entities[i];
+    if (e.alpha <= 0) continue;
+
+    const c = wCols(e.ci);
+    cx.save();
+    cx.globalAlpha = e.alpha;
+    cx.font = `700 ${e.fz}px 'Roboto Mono','Share Tech Mono',monospace`;
+
+    const PX = 16, PY = 11;
+    const bw = e.tw + PX * 2;
+    const bh = e.fz + PY * 2;
+    const wx = e.x - PX + Math.sin(e.wobble) * e.wobbleAmp;
+    const by = e.y - e.fz - PY;
+
+    /* Pill body */
+    cx.fillStyle   = c.k;
+    cx.shadowColor = 'transparent';
+    rr(cx, wx, by, bw, bh, 8);
+    cx.fill();
+
+    /* Pill border — glows when being typed */
+    cx.strokeStyle = c.s;
+    cx.lineWidth   = e.glow > 0.3 ? 2.2 : 1.5;
+    cx.shadowColor = c.g;
+    cx.shadowBlur  = e.glow * 28 + 5;
+    rr(cx, wx, by, bw, bh, 8);
+    cx.stroke();
+    cx.shadowBlur  = 0;
+
+    /* Top highlight line on pill */
+    cx.beginPath();
+    cx.moveTo(wx + 8, by + 1);
+    cx.lineTo(wx + bw - 8, by + 1);
+    cx.strokeStyle = `rgba(255,255,255,${0.10 + e.glow * 0.12})`;
+    cx.lineWidth   = 1;
+    cx.stroke();
+
+    /* Characters — per-letter render */
+    const isMatching = typed && e.txt.startsWith(typed);
+    let letterX = e.x + Math.sin(e.wobble) * e.wobbleAmp;
+
+    for (let j = 0; j < e.letters.length; j++) {
+      const lt = e.letters[j];
+      if (lt.alpha <= 0) {
+        letterX += lt.w;
+        continue;
+      }
+
+      cx.save();
+      cx.globalAlpha = e.alpha * lt.alpha;
+
+      /* Transform for dying letters — scale + float up */
+      if (lt.dying) {
+        const cx_ = letterX + lt.w / 2;
+        const cy_ = e.y;
+        cx.translate(cx_, cy_);
+        cx.scale(lt.scale, lt.scale);
+        cx.translate(-lt.w/2, 0);
+      } else {
+        cx.translate(0, 0);
+      }
+
+      if (j < e.typedLen) {
+        /* Typed — bright accent, already shrinking */
+        cx.fillStyle   = c.s;
+        cx.shadowColor = c.g;
+        cx.shadowBlur  = 20;
+      } else if (isMatching && j < typed.length) {
+        /* Currently matching char */
+        cx.fillStyle   = c.s;
+        cx.shadowColor = c.g;
+        cx.shadowBlur  = 16;
+      } else {
+        /* Untyped — bright, high contrast white */
+        cx.fillStyle   = ink0;
+        cx.shadowBlur  = 0;
+      }
+
+      if (lt.dying) {
+        cx.fillText(lt.ch, 0, 0);
+      } else {
+        cx.fillText(lt.ch, letterX, e.y);
+      }
+      cx.restore();
+
+      letterX += lt.w;
+    }
+
+    /* Progress underline */
+    if (e.typedLen > 0 && !e.dying) {
+      cx.font = `700 ${e.fz}px 'Roboto Mono','Share Tech Mono',monospace`;
+      let pw = 0;
+      for (let k = 0; k < e.typedLen; k++) pw += e.letters[k]?.w || 0;
+      const ux = e.x + Math.sin(e.wobble) * e.wobbleAmp;
+      cx.save();
+      cx.globalAlpha = e.alpha * 0.85;
+      cx.strokeStyle = c.s;
+      cx.lineWidth   = 2.5;
+      cx.shadowColor = c.g;
+      cx.shadowBlur  = 12;
+      cx.beginPath();
+      cx.moveTo(ux, e.y + 4);
+      cx.lineTo(ux + pw, e.y + 4);
+      cx.stroke();
+      cx.restore();
+    }
+
+    cx.restore();
+  }
+
+  /* ── PARTICLES ── */
+  for (let i = 0; i < particles.length; i++) {
+    const p = particles[i];
+    if (p.alpha <= 0) continue;
+    cx.save();
+    cx.globalAlpha = p.alpha;
+
+    if (p.kind === 'ring') {
+      cx.beginPath();
+      cx.arc(p.x, p.y, p.r, 0, Math.PI*2);
+      cx.strokeStyle = p.color;
+      cx.lineWidth   = 1.8;
+      cx.shadowColor = p.color;
+      cx.shadowBlur  = 14;
+      cx.stroke();
+    } else if (p.kind === 'spark') {
+      cx.beginPath();
+      cx.moveTo(p.x, p.y);
+      cx.lineTo(p.x + p.ax * p.len * p.alpha, p.y + p.ay * p.len * p.alpha);
+      cx.strokeStyle = p.color;
+      cx.lineWidth   = 1.2;
+      cx.shadowColor = p.color;
+      cx.shadowBlur  = 7;
+      cx.stroke();
+    } else if (p.kind === 'glyph') {
+      cx.font        = "bold 13px 'Roboto Mono','Share Tech Mono',monospace";
+      cx.fillStyle   = p.color;
+      cx.shadowColor = p.color;
+      cx.shadowBlur  = 10;
+      cx.fillText(p.ch, p.x, p.y);
+    } else {
+      cx.beginPath();
+      cx.arc(p.x, p.y, p.r, 0, Math.PI*2);
+      cx.fillStyle   = p.color;
+      cx.shadowColor = p.color;
+      cx.shadowBlur  = 9;
+      cx.fill();
+    }
+    cx.restore();
+  }
+
+  /* ── FLOATERS ── */
+  cx.textAlign = 'center';
+  for (const f of floaters) {
+    if (f.alpha <= 0) continue;
+    cx.save();
+    cx.globalAlpha = f.alpha;
+    cx.font        = "bold 14px 'Roboto','Exo 2',sans-serif";
+    cx.fillStyle   = f.color;
+    cx.shadowColor = f.color;
+    cx.shadowBlur  = 16;
+    cx.fillText(f.txt, f.x, f.y);
+    cx.restore();
+  }
+  cx.textAlign = 'left';
+}
+
+/* ════════════════════════════════════════════════════════
+   UPDATE PASS
+════════════════════════════════════════════════════════ */
+function update() {
+  const typed = wi.value.toLowerCase().trim();
+
+  /* Words */
+  for (let i = entities.length - 1; i >= 0; i--) {
+    const e = entities[i];
+
+    if (e.dying) {
+      /* Fade out whole word after all letters die */
+      const allGone = e.letters.every(l => l.alpha <= 0);
+      if (allGone) {
+        e.alpha -= 0.1;
+        e.y     -= 1.5;
+      }
+      /* Animate individual letters */
+      e.letters.forEach(l => {
+        if (l.dying) {
+          l.alpha -= l.dyingSpeed;
+          l.scale  = Math.max(0.01, l.scale - l.dyingSpeed * 0.6);
+        }
+      });
+      if (e.alpha <= 0) entities.splice(i, 1);
+    } else {
+      e.y      += e.spd;
+      e.wobble += e.wobbleSpd;
+      e.glow    = Math.max(0, e.glow - 0.05);
+
+      if (typed && e.txt.startsWith(typed)) {
+        e.glow     = Math.min(1, e.glow + 0.32);
+        e.typedLen = typed.length;
+
+        /* Mark consumed letters as dying for smooth destruction */
+        for (let j = 0; j < typed.length; j++) {
+          const lt = e.letters[j];
+          if (lt && !lt.dying) {
+            lt.dying     = true;
+            lt.dyingSpeed = 0.07 + Math.random() * 0.07;
+          }
+        }
+      } else {
+        /* Reset if input no longer matches */
+        if (e.typedLen > 0) {
+          e.letters.forEach((l, idx) => {
+            if (idx < e.typedLen) {
+              l.dying     = false;
+              l.alpha     = 1;
+              l.scale     = 1;
+            }
+          });
+          e.typedLen = 0;
+        }
+      }
+
+      if (e.y > H + 40) missWord(i);
+    }
+  }
+
+  /* Particles */
+  for (let i = particles.length - 1; i >= 0; i--) {
+    const p = particles[i];
+    if (p.kind === 'ring') {
+      p.r     += p.spd; p.alpha -= 0.052;
+    } else if (p.kind === 'spark') {
+      p.x += p.vx; p.y += p.vy; p.vy += 0.20; p.alpha -= 0.038;
+    } else if (p.kind === 'glyph') {
+      p.x += p.vx; p.y += p.vy; p.vy += 0.10; p.alpha -= 0.024;
+    } else {
+      p.x += p.vx; p.y += p.vy; p.vy += 0.12;
+      p.alpha -= 0.025; p.r *= p.shrink;
+    }
+    if (p.alpha <= 0 || p.r < 0.1) particles.splice(i, 1);
+  }
+
+  /* Floaters */
+  for (let i = floaters.length - 1; i >= 0; i--) {
+    const f = floaters[i];
+    f.x += f.vx; f.y += f.vy; f.alpha -= 0.016;
+    if (f.alpha <= 0) floaters.splice(i, 1);
+  }
+}
+
+/* ════════════════════════════════════════════════════════
+   MAIN LOOP
+════════════════════════════════════════════════════════ */
+function loop() {
+  update();
+  draw();
+  rafId = requestAnimationFrame(loop);
+}
+
+/* ════════════════════════════════════════════════════════
+   INPUT — REAL-TIME AUTO-DESTROY
+════════════════════════════════════════════════════════ */
+const wi = document.getElementById('wi');
+
+wi.addEventListener('input', () => {
+  wake();
+  const typed = wi.value.toLowerCase();
+  if (!typed) {
+    /* Reset any partial matches */
+    entities.forEach(e => {
+      if (e.typedLen > 0) {
+        e.letters.forEach((l, idx) => {
+          if (idx < e.typedLen) { l.dying = false; l.alpha = 1; l.scale = 1; }
+        });
+        e.typedLen = 0;
+        e.glow = 0;
+      }
+    });
+    return;
+  }
+
+  /* Find deepest exact match */
+  let found = -1, bestY = -Infinity;
+  for (let i = 0; i < entities.length; i++) {
+    const e = entities[i];
+    if (!e.matched && e.txt === typed && e.y > bestY) {
+      bestY = e.y; found = i;
+    }
+  }
+
+  if (found !== -1) {
+    charHits += entities[found].txt.length;
+    destroyWord(found);
+    wi.value = '';
+    wi.classList.add('hit');
+    setTimeout(() => wi.classList.remove('hit'), 230);
+  } else {
+    let anyMatch = false;
+    for (const e of entities) {
+      if (!e.matched && e.txt.startsWith(typed)) { anyMatch = true; break; }
+    }
+    if (anyMatch) {
+      SFX.key();
+      charHits++;
+    } else {
+      charMiss++;
+      wi.classList.add('miss');
+      setTimeout(() => wi.classList.remove('miss'), 320);
+    }
+  }
+
+  hudUpdate();
+});
+
+/* Enter as fallback */
+wi.addEventListener('keydown', e => {
+  if (e.key === 'Enter') {
+    e.preventDefault();
+    wake();
+    const typed = wi.value.toLowerCase().trim();
+    if (!typed) return;
+    let found = -1, bestY = -Infinity;
+    for (let i = 0; i < entities.length; i++) {
+      const ent = entities[i];
+      if (!ent.matched && ent.txt === typed && ent.y > bestY) {
+        bestY = ent.y; found = i;
+      }
+    }
+    if (found !== -1) {
+      charHits += entities[found].txt.length;
+      destroyWord(found);
+      wi.value = '';
+      wi.classList.add('hit');
+      setTimeout(() => wi.classList.remove('hit'), 230);
+    } else {
+      gs.combo = 0;
+      charMiss++;
+      wi.classList.add('miss');
+      setTimeout(() => { wi.classList.remove('miss'); wi.value = ''; }, 340);
+    }
+    hudUpdate();
+  }
+  if (e.key === 'Escape') wi.value = '';
+});
+
+/* Auto-focus */
+document.addEventListener('keydown', e => {
+  if (running && document.activeElement !== wi && e.key !== 'Escape') wi.focus();
+});
+
+/* ════════════════════════════════════════════════════════
+   SCREEN MANAGEMENT
+════════════════════════════════════════════════════════ */
+function showScreen(id) {
+  ['s-start','s-over'].forEach(s =>
+    document.getElementById(s).classList.toggle('gone', s !== id)
+  );
+}
+function hideScreens() {
+  ['s-start','s-over'].forEach(s =>
+    document.getElementById(s).classList.add('gone')
+  );
+}
+
+/* ════════════════════════════════════════════════════════
+   START / RESTART
+════════════════════════════════════════════════════════ */
+function startGame() {
+  wake();
+  hideScreens();
+  resize();
+  initGame();
+  running = true;
+  startSpawnCycle();
+  cancelAnimationFrame(rafId);
+  loop();
+  setTimeout(() => wi.focus(), 80);
+}
+
+document.getElementById('btn-start').addEventListener('click', startGame);
+document.getElementById('btn-restart').addEventListener('click', startGame);
+
+/* ════════════════════════════════════════════════════════
+   DIFFICULTY BUTTONS
+════════════════════════════════════════════════════════ */
+document.querySelectorAll('.dbtn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.dbtn').forEach(b => b.classList.remove('sel'));
+    btn.classList.add('sel');
+    diff = btn.dataset.d;
+  });
+});
+
+/* ════════════════════════════════════════════════════════
+   BOOT
+════════════════════════════════════════════════════════ */
+buildBgNodes();
+animateBg();
+resize();
+</script>
+<script src="js/words.js"></script>
+<script src="js/audio.js"></script>
+<script src="js/background.js"></script>
+<script src="js/theme.js"></script>
+<script src="js/game.js"></script>
+</body>
+</body>
+</html>
