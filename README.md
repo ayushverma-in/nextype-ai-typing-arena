@@ -81,13 +81,6 @@ git clone https://github.com/yourusername/nextype-ai-typing-arena.git
 
 ---
 
-
-## License
-
-MIT License
-
----
-
 ## Author
 
 Created by Ayush Verma
