@@ -8,6 +8,11 @@ A futuristic AI-themed typing game built with Vanilla JavaScript, Canvas API, pa
 
 ---
 
+## Gameplay Preview
+
+![Gameplay Demo](assets/gifs/gameplay-demo.gif)
+
+---
 ## Preview
 
 ### Start Screen
