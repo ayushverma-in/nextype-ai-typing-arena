@@ -83,7 +83,7 @@ nextype-ai-typing-arena/
 1. Download or clone repository
 
 ```bash
-git clone https://github.com/yourusername/nextype-ai-typing-arena.git
+git clone https://github.com/ayushverma-in/nextype-ai-typing-arena.git
 ```
 
 2. Open `index.html` in browser
@@ -93,3 +93,4 @@ git clone https://github.com/yourusername/nextype-ai-typing-arena.git
 ## Author
 
 Created by Ayush Verma
+
