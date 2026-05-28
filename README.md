@@ -1,5 +1,9 @@
 # NexType — AI Typing Arena
 
+## Play Online
+
+[Play NexType](https://ayushverma-in.github.io/nextype-ai-typing-arena/)
+
 A futuristic AI-themed typing game built with Vanilla JavaScript, Canvas API, particle effects, and dynamic neon themes.
 
 ---
